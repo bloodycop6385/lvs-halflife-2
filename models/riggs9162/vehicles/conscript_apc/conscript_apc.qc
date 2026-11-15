@@ -1,6 +1,6 @@
 // Created by Crowbar 0.74
 
-$ModelName "riggs9162/thirdparty/conscript_apc.mdl"
+$ModelName "riggs9162/vehicles/conscript_apc.mdl"
 
 $BodyGroup "body"
 {
