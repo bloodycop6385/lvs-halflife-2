@@ -1,3 +1,9 @@
+--- The headlight shines from the rocket muzzle on the front of the hull. The sprite and the high beam
+--- follow its attachment straight ahead. LVS ignores the angle of a light placed on an attachment, so the
+--- low beam sits at the muzzle by position instead, tilted ten degrees down.
+local spotlight = "cannon_muzzle"
+local spotlightLow = Vector(52.1, 0, 75.7)
+
 ENT.Base = "lvs_base_wheeldrive"
 ENT.PrintName = "Combine APC"
 ENT.Author = "Riggs"
@@ -13,6 +19,17 @@ ENT.MDL_DESTROYED = "models/combine_apc_destroyed_gib01.mdl"
 ENT.Spawnable = true
 ENT.TransGears = 1
 ENT.TransGearsReverse = 1
+
+--- Whether the vehicle behaves like the Half-Life 2 APC: how it takes damage and falls apart, its engine sounds and the danger it warns NPCs about.
+ENT.HL2APC = true
+
+--- Top speed of 35 mph and reverse speed of 20 mph, from the Half-Life 2 vehicle script (scripts/vehicles/apc.txt).
+ENT.MaxVelocity = 616
+ENT.MaxVelocityReverse = 352
+
+--- Mass of 1600 kg, from the vehicle script.
+ENT.PhysicsMass = 1600
+
 ENT.VehicleCategory = "Half Life 2"
 ENT.VehicleSubCategory = "Combine"
 
@@ -36,26 +53,17 @@ ENT.Lights = {
         Trigger = "high",
         Sprites = {
             {
-                pos = Vector(102, 0, 60),
+                pos = spotlight,
                 colorR = 0,
                 colorG = 180,
                 colorB = 220,
                 colorA = 150,
                 size = 60
             },
-            {
-                pos = Vector(100, -3, 56),
-                colorR = 0,
-                colorG = 180,
-                colorB = 220,
-                colorA = 150,
-                size = 20
-            }
         },
         ProjectedTextures = {
             {
-                pos = Vector(102, 0, 60),
-                ang = Angle(0, 0, 0),
+                pos = spotlight,
                 colorR = 0,
                 colorG = 180,
                 colorB = 220,
@@ -69,27 +77,22 @@ ENT.Lights = {
     },
     {
         Trigger = "main",
+        -- Lights up the glow mask (apc01glow) on the hull while the lights are on.
+        SubMaterialID = "models/combine_apc/apc01blue",
+        SubMaterialBrightness = 1,
         Sprites = {
             {
-                pos = Vector(102, 0, 60),
+                pos = spotlight,
                 colorR = 0,
                 colorG = 180,
                 colorB = 220,
                 colorA = 150,
                 size = 60
             },
-            {
-                pos = Vector(100, -3, 56),
-                colorR = 0,
-                colorG = 180,
-                colorB = 220,
-                colorA = 150,
-                size = 20
-            }
         },
         ProjectedTextures = {
             {
-                pos = Vector(102, 0, 60.5),
+                pos = spotlightLow,
                 ang = Angle(10, 0, 0),
                 colorR = 0,
                 colorG = 180,
@@ -106,6 +109,9 @@ ENT.Lights = {
 
 function ENT:OnSetupDataTables()
     self:AddDT("Bool", "HornEnabled")
+
+    -- Time until which the rear doors stay open, so troops can climb in and out.
+    self:AddDT("Float", "RearDoorsOpenUntil")
 end
 
 function ENT:InitWeapons()
